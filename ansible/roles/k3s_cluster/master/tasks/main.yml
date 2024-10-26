@@ -2,6 +2,7 @@
 - name: Deploy vip manifest
   ansible.builtin.include_tasks: kube-vip.yml
 
+# Only run bootstrap block for first init
 - name: Bootstrap cluster
   block:
     - name: Copy K3s cluster bootstrap first service file
@@ -69,7 +70,7 @@
       ansible.builtin.file:
         path: /etc/systemd/system/k3s-bootstrap.service
         state: absent
-  when: k3s_boostrap_cluster
+  when: bootstrap_cluster | default(False)
 
 - name: Copy K3s service file
   register: k3s_service

@@ -13,7 +13,13 @@
     mode: "0755"
 
 # tools for longhorn, helm 
-- name: Install necesarry tools
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: full
+  tags: install_tools
+
+- name: Install necessary tools
   ansible.builtin.apt:
     name: "{{ item }}"
     state: latest
@@ -21,6 +27,18 @@
     - open-iscsi
     - nfs-common
     - git
+  tags: install_tools
+
+- name: Upgrade packages
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: full
+  tags: apt_upgrade
+
+- name: Free up disk space
+  command: apt clean
+  become: yes
+  tags: install_tools, apt_upgrade
 
 - name: Enable IPv4 forwarding
   ansible.posix.sysctl:
@@ -46,6 +64,4 @@
     reload: true
   tags: sysctl
 
-- name: Free up disk space
-  command: apt clean
-  become: yes
+
