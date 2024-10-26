@@ -1,15 +1,9 @@
 ---
-k3s_version: v1.30.2+k3s2
 
-
-# Set your timezone
 timezone: Your/Timezone
 
-# interface which will be used for flannel
+k3s_version: v1.30.2+k3s2
 flannel_iface: eth0
-
-# k3s_token is required  masters can talk together securely
-# this token should be alpha numeric only
 k3s_token: some-SUPER-DEDEUPER-secret-password
 
 # The IP on which the node is reachable in the cluster.
@@ -37,22 +31,7 @@ extra_server_args: >-
 extra_agent_args: >-
   {{ extra_args }}
 
-# enable kube-vip ARP broadcasts
-kube_vip_arp: true
-
-# image tag for kube-vip
-kube_vip_tag_version: v0.8.2
-
-# kube Vip ip master_vip is virtual ip-address which will be configured on each master
+kube_vip_version: v0.8.2
 master_vip: 192.168.30.222
 
-# metallb type frr or native
-metal_lb_type: native
-
-
-# image tag for metal lb
-metallb_version: v0.14.8
-
-# metallb ip range for load balancer
-metal_lb_ip_range: 192.168.30.80-192.168.30.90
 

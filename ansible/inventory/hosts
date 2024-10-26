@@ -3,11 +3,11 @@
 192.168.0.22
 192.168.0.23
 
-[node]
+[agent]
 192.168.0.24
 192.168.0.25
 192.168.0.26
 
-[k3s_cluster:children]
+[k3s-cluster:children]
 master
 node
