@@ -1,0 +1,41 @@
+---
+- name: Install Kubernetes Python module
+  ansible.builtin.pip:
+    name: kubernetes
+- name: Install Kubernetes-validate Python module
+  ansible.builtin.pip:
+    name: kubernetes-validate
+
+- name: Deploy MetalLB Namespace Manifest
+  kubernetes.core.k8s:
+    kubeconfig: "/var/lib/rancher/k3s/server/cred/admin.kubeconfig"
+    state: present
+    definition: "{{ item }}"
+    validate:
+      fail_on_error: yes
+  with_items: '{{ lookup("url", "https://raw.githubusercontent.com/metallb/metallb/v{{ metallb_version }}/manifests/namespace.yaml", split_lines=False) | from_yaml_all | list }}'
+  when: item is not none
+  run_once: true
+  delegate_to: "{{ ansible_host }}"
+
+- name: Deploy MetalLB Manifest
+  kubernetes.core.k8s:
+    kubeconfig: "/var/lib/rancher/k3s/server/cred/admin.kubeconfig"
+    state: present
+    definition: "{{ item }}"
+    validate:
+      fail_on_error: yes
+  with_items: '{{ lookup("url", "https://raw.githubusercontent.com/metallb/metallb/v{{ metallb_version }}/manifests/metallb.yaml", split_lines=False) | from_yaml_all | list }}'
+  when: item is not none
+  run_once: true
+  delegate_to: "{{ ansible_host }}"
+
+- name: Deploy MetalLB Configmap
+  kubernetes.core.k8s:
+    kubeconfig: "/var/lib/rancher/k3s/server/cred/admin.kubeconfig"
+    state: present
+    definition: "{{ lookup('template', 'templates/configmap.j2') }}"
+    validate:
+      fail_on_error: yes
+  delegate_to: "{{ ansible_host }}"
+  run_once: true

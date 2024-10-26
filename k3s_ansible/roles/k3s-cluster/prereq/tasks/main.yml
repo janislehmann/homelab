@@ -1,0 +1,51 @@
+---
+- name: Set same timezone on every Server
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Download k3s binary x64
+  ansible.builtin.get_url:
+    url: https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/k3s
+    checksum: sha256:https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/sha256sum-amd64.txt
+    dest: /usr/local/bin/k3s
+    owner: root
+    group: root
+    mode: "0755"
+
+# tools for longhorn, helm 
+- name: Install necesarry tools
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - open-iscsi
+    - nfs-common
+    - git
+
+- name: Enable IPv4 forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    reload: true
+  tags: sysctl
+
+- name: Enable IPv6 forwarding
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: "1"
+    state: present
+    reload: true
+  tags: sysctl
+
+- name: Enable IPv6 router advertisements
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.accept_ra
+    value: "2"
+    state: present
+    reload: true
+  tags: sysctl
+
+- name: Free up disk space
+  command: apt clean
+  become: yes

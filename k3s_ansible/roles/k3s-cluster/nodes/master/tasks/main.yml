@@ -1,0 +1,146 @@
+---
+- name: Deploy vip manifest
+  ansible.builtin.include_tasks: vip.yml
+
+- name: Bootstrap cluster
+  block:
+    - name: Copy K3s cluster bootstrap first service file
+      register: k3s_service
+      ansible.builtin.template:
+        src: "templates/k3s-bootstrap-first.service.j2"
+        dest: "{{ systemd_dir }}/k3s-bootstrap.service"
+        owner: root
+        group: root
+        mode: 0644
+      when: inventory_hostname == groups.master[0]
+
+    - name: Copy K3s cluster bootstrap followers service file
+      register: k3s_service
+      ansible.builtin.template:
+        src: "templates/k3s-bootstrap-followers.service.j2"
+        dest: "{{ systemd_dir }}/k3s-bootstrap.service"
+        owner: root
+        group: root
+        mode: 0644
+      when: inventory_hostname != groups.master[0]
+
+    - name: Start K3s service bootstrap first master
+      ansible.builtin.systemd:
+        name: k3s-bootstrap
+        daemon_reload: yes
+        enabled: no
+        state: started
+      delay: 3
+      register: result
+      retries: 3
+      until: result is not failed
+      when: ansible_hostname == groups.master[0]
+
+    - name: Wait for service to start
+      ansible.builtin.pause:
+        seconds: 30
+      run_once: yes
+
+    - name: Start K3s service bootstrap followers
+      ansible.builtin.systemd:
+        name: k3s-bootstrap
+        daemon_reload: yes
+        enabled: no
+        state: started
+      delay: 3
+      register: result
+      retries: 3
+      until: result is not failed
+      when: ansible_hostname != groups.master[0]
+
+    - name: Wait for service to start
+      ansible.builtin.pause:
+        seconds: 30
+      run_once: yes
+
+    - name: Stop K3s service bootstrap
+      ansible.builtin.systemd:
+        name: k3s-bootstrap
+        daemon_reload: no
+        enabled: no
+        state: stopped
+
+    - name: Remove K3s service bootstrap
+      ansible.builtin.file:
+        path: /etc/systemd/system/k3s-bootstrap.service
+        state: absent
+  when: k3s_boostrap_cluster
+
+- name: Copy K3s service file
+  register: k3s_service
+  ansible.builtin.template:
+    src: k3s.service.j2
+    dest: "/etc/systemd/system/k3s.service"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable and check K3s service
+  ansible.builtin.systemd:
+    name: k3s
+    daemon_reload: true
+    state: restarted
+    enabled: true
+
+- name: Wait for node-token
+  ansible.builtin.wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
+
+- name: Register node-token file access mode
+  ansible.builtin.stat:
+    path: /var/lib/rancher/k3s/server
+  register: p
+
+- name: Change file access node-token
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server
+    mode: g+rx,o+rx
+
+- name: Read node-token from master
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: node_token
+
+- name: Store Master node-token
+  ansible.builtin.set_fact:
+    token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
+
+- name: Restore node-token file access
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server
+    mode: "{{ p.stat.mode }}"
+
+- name: Change k3s.yaml permissions to 644
+  file:
+    path: /etc/rancher/k3s/k3s.yaml
+    owner: "{{ ansible_user }}"
+    mode: "644"
+
+- name: Configure kubectl cluster to {{ endpoint_url }}
+  ansible.builtin.command: >-
+    k3s kubectl config set-cluster default
+      --server=https://{{ master_vip }}:6443
+      --kubeconfig {{ ansible_user_dir }}/.kube/config
+  changed_when: true
+
+- name: Create kubectl symlink
+  ansible.builtin.file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/kubectl
+    state: link
+
+- name: Create crictl symlink
+  ansible.builtin.file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/crictl
+    state: link
+
+- name: Install helm
+  ansible.builtin.include_tasks: helm.yml
+
+
