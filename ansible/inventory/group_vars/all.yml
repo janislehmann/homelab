@@ -1,17 +1,18 @@
 ---
 
-timezone: Your/Timezone
-
-k3s_version: v1.30.2+k3s2
-k3s_token: some-SUPER-DEDEUPER-secret-password
+timezone: Europe/Berlin
+k3s_version: v1.31.1+k3s1
+kube_vip_version: v0.8.4
+master_vip: 192.168.0.20
+vip_interface: eth0
+k3s_token: "{{ lookup('file', '../token.txt') }}"
 server_args: >-
   --tls-san {{ master_vip }}
   --disable servicelb
   --disable traefik
-agent_args: 
+agent_args: ""
 
-kube_vip_version: v0.8.2
-master_vip: 192.168.30.222
-vip_interface: eth0
+
+
 
 

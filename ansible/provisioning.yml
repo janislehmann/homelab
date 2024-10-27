@@ -24,7 +24,7 @@
   tasks:
     - name: Copying kubeconfig from master
       ansible.builtin.fetch:
-        src: "{{ ansible_user_dir }}/.kube/config"
+        src: "/etc/rancher/k3s/k3s.yaml"
         dest: ./kubeconfig
         flat: true
       when: inventory_hostname == groups.master[0]

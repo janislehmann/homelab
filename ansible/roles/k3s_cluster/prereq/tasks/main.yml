@@ -36,7 +36,7 @@
   tags: apt_upgrade
 
 - name: Free up disk space
-  command: apt clean
+  ansible.builtin.command: apt clean
   become: yes
   tags: install_tools, apt_upgrade
 

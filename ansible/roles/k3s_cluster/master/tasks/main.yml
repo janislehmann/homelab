@@ -35,7 +35,7 @@
       register: result
       retries: 3
       until: result is not failed
-      when: ansible_hostname == groups.master[0]
+      when: inventory_hostname == groups.master[0]
 
     - name: Wait for service to start
       ansible.builtin.pause:
@@ -52,7 +52,7 @@
       register: result
       retries: 3
       until: result is not failed
-      when: ansible_hostname != groups.master[0]
+      when: inventory_hostname != groups.master[0]
 
     - name: Wait for service to start
       ansible.builtin.pause:
