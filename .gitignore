@@ -1,4 +1,6 @@
 kubeconfig
 .DS_Store
 .vscode/*
+*.terraform*
 token.txt
+planfile
