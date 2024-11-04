@@ -16,7 +16,7 @@
     - role: k3s_cluster/master
 
 - name: Setup k3s agents
-  hosts: agentv
+  hosts: agent
   become: true
   vars_files:
     - secrets.yml
