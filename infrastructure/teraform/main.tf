@@ -1,6 +1,7 @@
 resource "proxmox_vm_qemu" "k3s_master" {
   count = length(local.k3s_master)
   name = local.k3s_master[count.index].name
+  vmid = local.k3s_master[count.index].vmid
   desc = "k3s master machine"
   pool        = "k3s"
   target_node = local.k3s_master[count.index].target_node
@@ -51,6 +52,7 @@ resource "proxmox_vm_qemu" "k3s_master" {
 resource "proxmox_vm_qemu" "k3s_agent" {
   count = length(local.k3s_agent)
   name = local.k3s_agent[count.index].name
+  vmid = local.k3s_agent[count.index].vmid
   desc = "k3s agent machine"
   pool        = "k3s"
   target_node = local.k3s_agent[count.index].target_node
