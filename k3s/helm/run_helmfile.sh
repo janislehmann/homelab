@@ -1,0 +1,2 @@
+#!/bin/bash
+helmfile apply
