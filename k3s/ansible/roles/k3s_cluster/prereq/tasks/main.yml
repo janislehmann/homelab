@@ -29,15 +29,9 @@
     - git
   tags: install_tools
 
-- name: Upgrade packages
-  ansible.builtin.apt:
-    update_cache: true
-    upgrade: full
-  tags: apt_upgrade
-
 - name: Free up disk space
   ansible.builtin.command: apt clean
-  become: yes
+  become: true
   tags: install_tools, apt_upgrade
 
 - name: Enable IPv4 forwarding
