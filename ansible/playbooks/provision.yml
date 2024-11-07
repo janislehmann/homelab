@@ -4,7 +4,7 @@
   gather_facts: true
   become: true
   roles:
-    - role: k3s_cluster/prereq
+    - role: prereq
       become: true
 
 - name: Setup k3s master
@@ -13,7 +13,7 @@
   vars_files:
     - secrets.yml
   roles:
-    - role: k3s_cluster/master
+    - role: master
 
 - name: Setup k3s agents
   hosts: agent
@@ -21,7 +21,7 @@
   vars_files:
     - secrets.yml
   roles:
-    - role: k3s_cluster/agent
+    - role: agent
 
 - name: Storing kubeconfig in the playbook directory
   hosts: master
