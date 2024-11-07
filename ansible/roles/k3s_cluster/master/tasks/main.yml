@@ -79,4 +79,7 @@
 - name: Install helm
   ansible.builtin.include_tasks: helm.yml
 
+- name: Configure persistent volume with nfs
+  ansible.builtin.include_tasks: nfs-pv.yml
+
 

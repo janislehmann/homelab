@@ -1,15 +1,8 @@
 repositories:
-  - name: longhorn
-    url: https://charts.longhorn.io
   - name: metallb
     url: https://metallb.github.io/metallb
 ---
 releases:
-  - name: longhorn
-    namespace: longhorn-system
-    chart: longhorn/longhorn
-    version: 1.7.2
-  
   - name: metallb
     namespace: metallb-system
     chart: metallb/metallb

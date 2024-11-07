@@ -10,7 +10,8 @@ server_args: >-
   --disable servicelb
   --disable traefik
 agent_args: ""
-
+nfs_sever: 192.168.0.3
+nfs_path: /volume1/infra_pv
 
 
 
