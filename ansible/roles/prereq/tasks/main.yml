@@ -18,6 +18,7 @@
     update_cache: true
     upgrade: full
   tags: install_tools
+  changed_when: false
 
 - name: Install necessary tools
   ansible.builtin.apt:
@@ -28,11 +29,6 @@
     - nfs-common
     - git
   tags: install_tools
-
-- name: Free up disk space
-  ansible.builtin.command: apt clean
-  become: true
-  tags: install_tools, apt_upgrade
 
 - name: Enable IPv4 forwarding
   ansible.posix.sysctl:

@@ -14,6 +14,7 @@
     - secrets.yml
   roles:
     - role: master
+    - role: master-post
 
 - name: Setup k3s agents
   hosts: agent
@@ -22,13 +23,3 @@
     - secrets.yml
   roles:
     - role: agent
-
-- name: Storing kubeconfig in the playbook directory
-  hosts: master
-  tasks:
-    - name: Copying kubeconfig from master
-      ansible.builtin.fetch:
-        src: "/etc/rancher/k3s/k3s.yaml"
-        dest: ./kubeconfig
-        flat: true
-      when: inventory_hostname == groups.master[0]

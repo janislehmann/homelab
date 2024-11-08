@@ -23,6 +23,12 @@
     state: restarted
     enabled: true
 
+- name: Deploy metallb manifest
+  ansible.builtin.include_tasks: metallb.yml
+
+# - name: Deploy persistent volume with nfs
+#   ansible.builtin.include_tasks: nfs-pv.yml
+
 - name: Wait for node-token
   ansible.builtin.wait_for:
     path: /var/lib/rancher/k3s/server/node-token
@@ -31,6 +37,7 @@
   ansible.builtin.stat:
     path: /var/lib/rancher/k3s/server
   register: p
+  changed_when: false
 
 - name: Change file access node-token
   ansible.builtin.file:
@@ -75,11 +82,3 @@
     src: /usr/local/bin/k3s
     dest: /usr/local/bin/crictl
     state: link
-
-- name: Install helm
-  ansible.builtin.include_tasks: helm.yml
-
-- name: Configure persistent volume with nfs
-  ansible.builtin.include_tasks: nfs-pv.yml
-
-
