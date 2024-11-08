@@ -29,7 +29,7 @@
   until: result is not failed
   when: inventory_hostname == groups.master[0]
 
-- name: Wait for service to start
+- name: Wait for service to start on first master
   ansible.builtin.pause:
     seconds: 30
   run_once: true
@@ -46,7 +46,7 @@
   until: result is not failed
   when: inventory_hostname != groups.master[0]
 
-- name: Wait for service to start
+- name: Wait for service to start on followers
   ansible.builtin.pause:
     seconds: 30
   run_once: true

@@ -25,12 +25,17 @@
   when: inventory_hostname == groups.master[0]
   register: copy_crs
 
+- name: Wait for start of MetalLB deployment
+  ansible.builtin.pause:
+    seconds: 30
+  when: inventory_hostname == groups.master[0] and copy_crs.changed
+
 - name: Wait for MetalLB resources
   ansible.builtin.command: >-
-   k3s kubectl wait {{ item.resource }} --namespace='metallb-system'
-    {% if item.name | default(False) -%}{{ item.name }}{%- endif %}
-    {% if item.selector | default(False) -%}--selector='{{ item.selector }}'{%- endif %}
-    {% if item.condition | default(False) -%}{{ item.condition }}{%- endif %}
+    k3s kubectl wait {{ item.resource }} --namespace='metallb-system'
+    {% if item.name | default("") -%}{{ item.name }}{%- endif %}
+    {% if item.selector | default("") -%}--selector='{{ item.selector }}'{%- endif %}
+    {% if item.condition | default("") -%}{{ item.condition }}{%- endif %}
     --timeout='240s'
   changed_when: false
   with_items:
@@ -65,6 +70,7 @@
 - name: Apply metallb CRs
   ansible.builtin.command: >-
    k3s kubectl apply -f /tmp/metallb/metallb-crs.yaml --timeout='240s'
-  until: this.rc == 0
+  register: result
+  until: result.rc == 0
   retries: 5
   when: inventory_hostname == groups.master[0] and copy_crs.changed

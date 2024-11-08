@@ -45,12 +45,12 @@
     mode: "644"
 
 - name: Configure kubectl cluster to {{ master_vip }}
-  ansible.builtin.lineinfile:
-    path: /etc/rancher/k3s/k3s.yaml
-    regexp: '^ *server: .*'
-    line: "server: https://{{ master_vip }}:6443"
-    state: present
-  notify: Restart k3s
+  ansible.builtin.command: >-
+    k3s kubectl config set-cluster default
+      --server=https://{{ master_vip }}:6443
+      --kubeconfig /etc/rancher/k3s/k3s.yaml
+  changed_when: true
+  when: bootstrap_cluster | default(False)
 
 - name: Create kubectl symlink
   ansible.builtin.file:
