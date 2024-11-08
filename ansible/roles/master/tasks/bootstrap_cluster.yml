@@ -1,6 +1,5 @@
 ---
 - name: Copy K3s cluster bootstrap first service file
-  register: k3s_service
   ansible.builtin.template:
     src: "templates/k3s-bootstrap-first.service.j2"
     dest: "/etc/systemd/system/k3s-bootstrap.service"
@@ -10,7 +9,6 @@
   when: inventory_hostname == groups.master[0]
 
 - name: Copy K3s cluster bootstrap followers service file
-  register: k3s_service
   ansible.builtin.template:
     src: "templates/k3s-bootstrap-followers.service.j2"
     dest: "/etc/systemd/system/k3s-bootstrap.service"

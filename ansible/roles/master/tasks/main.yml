@@ -1,4 +1,13 @@
 ---
+- name: Create manifests directory on first master
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests
+    state: directory
+    owner: root
+    group: root
+    mode: "0644"
+  when: inventory_hostname == groups.master[0]
+
 - name: Deploy vip manifest
   ansible.builtin.include_tasks: kube-vip.yml
 
@@ -20,7 +29,7 @@
   ansible.builtin.systemd:
     name: k3s
     daemon_reload: true
-    state: restarted
+    state: started
     enabled: true
 
 - name: Deploy metallb manifest
@@ -36,11 +45,12 @@
     mode: "644"
 
 - name: Configure kubectl cluster to {{ master_vip }}
-  ansible.builtin.command: >-
-    k3s kubectl config set-cluster default
-      --server=https://{{ master_vip }}:6443
-      --kubeconfig /etc/rancher/k3s/k3s.yaml
-  changed_when: true
+  ansible.builtin.lineinfile:
+    path: /etc/rancher/k3s/k3s.yaml
+    regexp: '^ *server: .*'
+    line: "server: https://{{ master_vip }}:6443"
+    state: present
+  notify: Restart k3s
 
 - name: Create kubectl symlink
   ansible.builtin.file:

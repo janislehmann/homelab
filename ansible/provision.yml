@@ -14,7 +14,6 @@
     - secrets.yml
   roles:
     - role: master
-    - role: master-post
 
 - name: Setup k3s agents
   hosts: agent
