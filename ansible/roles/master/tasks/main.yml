@@ -35,8 +35,8 @@
 - name: Deploy metallb manifest
   ansible.builtin.include_tasks: metallb.yml
 
-# - name: Deploy persistent volume with nfs
-#   ansible.builtin.include_tasks: nfs-pv.yml
+- name: Deploy persistent volume with nfs
+  ansible.builtin.include_tasks: nfs-pv.yml
 
 - name: Change k3s.yaml permissions to 644
   file:
