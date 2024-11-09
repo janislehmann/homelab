@@ -1,4 +1,11 @@
 ---
+ingress:
+  enabled: true
+  ingressClassName: nginx-internal
+  hosts:
+    - pihole.lhmn.cc
+DNS1: 1.1.1.1
+DNS2: 1.0.0.1
 persistentVolumeClaim:
   enabled: true
   storageClass: nfs-pv-pihole
