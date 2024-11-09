@@ -1,6 +1,0 @@
-nfs:
-  server: 192.168.0.3
-  path: /volume1/infra_pv
-
-storageClass:
-  name: nfs
