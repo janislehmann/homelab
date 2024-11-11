@@ -8,7 +8,7 @@ DNS1: 1.1.1.1
 DNS2: 1.0.0.1
 persistentVolumeClaim:
   enabled: true
-  storageClass: nfs-pv-pihole
+  storageClass: nfs-pihole
 serviceWeb:
   loadBalancerIP: 192.168.0.31
   annotations:

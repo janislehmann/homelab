@@ -1,0 +1,20 @@
+ingress:
+  className: nginx-internal
+  enabled: true
+  hosts:
+    - host: emby.lhmn.cc
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+persistence:
+  enabled: true
+  storageClass: nfs-generic
+nfsMounts:
+  enabled: true
+  mounts:
+    - name: content
+      nfsServer: 192.168.0.3
+      exportPath: "/volume1/mdb"
+      mountPath: "/mdb"
+      readOnly: true
+      capacity: 20Gi

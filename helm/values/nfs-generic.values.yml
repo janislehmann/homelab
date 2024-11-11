@@ -1,0 +1,8 @@
+nfs:
+  server: 192.168.0.3
+  path: /volume1/k8s_pv
+
+storageClass:
+  name: nfs-generic
+  defaultClass: true
+  accessModes: ReadOnlyMany

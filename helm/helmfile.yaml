@@ -7,15 +7,24 @@ repositories:
     url: https://kubernetes.github.io/ingress-nginx
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
+  - name: emby 
+    url: https://pmoscode-helm.github.io/emby/
   
 ---
 releases:
-  - name: nfs
+  - name: nfs-generic
     namespace: nfs-system
     chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
     version: 4.0.18
     values: 
-      - ./values/nfs.values.yml
+      - ./values/nfs-generic.values.yml
+  
+  - name: nfs-pihole
+    namespace: pihole-system
+    chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+    version: 4.0.18
+    values: 
+      - ./values/nfs-pihole.values.yml
 
   - name: pihole
     namespace: pihole-system
@@ -37,3 +46,10 @@ releases:
     version: 8.5.1
     values:
       - ./values/externaldns.values.yml
+  
+  - name: emby
+    namespace: emby-system
+    chart: emby/emby
+    version: 1.3.0
+    values:
+      - ./values/emby.values.yml
