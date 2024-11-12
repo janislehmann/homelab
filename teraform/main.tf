@@ -16,7 +16,7 @@ resource "proxmox_vm_qemu" "k3s_master" {
   sockets     = 1
   vcpus       = 0
   cpu         = "host"
-  memory      = 6144
+  memory      = 8192
   scsihw      = "virtio-scsi-pci"
   ipconfig0   = "ip=${local.k3s_master[count.index].ip}/24,gw=${local.gateway_ip}"
   nameserver  = local.dns

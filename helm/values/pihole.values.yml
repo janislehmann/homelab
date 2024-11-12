@@ -10,12 +10,12 @@ persistentVolumeClaim:
   enabled: true
   storageClass: nfs-pihole
 serviceWeb:
-  loadBalancerIP: 192.168.0.31
+  loadBalancerIP: 192.168.0.30
   annotations:
     metallb.universe.tf/allow-shared-ip: pihole-svc
   type: LoadBalancer
 serviceDns:
-  loadBalancerIP: 192.168.0.31
+  loadBalancerIP: 192.168.0.30
   annotations:
     metallb.universe.tf/allow-shared-ip: pihole-svc
   type: LoadBalancer
