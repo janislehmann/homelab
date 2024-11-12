@@ -11,6 +11,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 5Gi
   storageClass: nfs-generic
+hostNetwork: true
 configuration:
   enabled: true
   forceInit: true
