@@ -9,8 +9,6 @@ repositories:
     url: https://charts.bitnami.com/bitnami
   - name: emby 
     url: https://pmoscode-helm.github.io/emby
-  - name: home-assistant
-    url: http://pajikos.github.io/home-assistant-helm-chart
     
   
 ---
@@ -56,11 +54,4 @@ releases:
     version: 1.3.0
     values:
       - ./values/emby.values.yml
-
-  - name: homeassist
-    namespace: homeassist-system
-    chart: home-assistant/home-assistant
-    version: 0.2.86
-    values:
-      - ./values/home-assistant.values.yml
 
